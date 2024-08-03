@@ -258,6 +258,10 @@ public class LoadFakeDataServiceImpl implements LoadFakeDataService {
 //                "cloud_name", env.getProperty("CLOUDINARY_CLOUD_NAME"),
 //                "api_key", env.getProperty("CLOUDINARY_API_KEY"),
 //                "api_secret", env.getProperty("CLOUDINARY_API_SECRET")));
+        
+        if(!productInfoRepository.findAll().isEmpty()) {
+        	return false;
+        }
 
         if (!loadFixedPatternData(String.format("%s/%s", DATA_DIRECTORY, SORT_BY_DATA), FileNameType.SORT_BY)) {
             return false;
