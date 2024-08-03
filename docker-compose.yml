@@ -1,0 +1,136 @@
+version: '3'
+
+networks:
+  spring-cloud-microservices:
+
+services:
+  redis-cache:
+    image: redis:alpine
+    container_name: redis-cache-container
+    command: redis-server --requirepass CSCI5411DB12345
+    ports:
+      - 6379:6379
+    networks:
+      - spring-cloud-microservices
+
+  authentication-service:
+    build:
+      context: .
+      dockerfile: ./server/authentication-service/Dockerfile-dev
+    container_name: authentication-service-container
+    restart: always
+    depends_on:
+      - redis-cache
+      - react-ui
+    environment:
+      - DB_HOST=csci5411-db.chjxtxnfiie0.us-east-1.rds.amazonaws.com
+      - DB_PORT=3306
+      - DB_USER=admin
+      - DB_PASS=CSCI5411DB12345
+      - DB_SCHEMA=ecommerce_app_database
+      - ACTIVE_PROFILE=dev
+      - PORT=7000
+    expose:
+      - 7000
+    ports:
+      - 7000:7000
+    networks:
+      - spring-cloud-microservices
+
+  common-data-service:
+    build:
+      context: .
+      dockerfile: ./server/common-data-service/Dockerfile-dev
+    container_name: common-data-service-container
+    restart: always
+    depends_on:
+      - redis-cache
+      - react-ui
+    environment:
+      - DB_HOST=csci5411-db.chjxtxnfiie0.us-east-1.rds.amazonaws.com
+      - DB_PORT=3306
+      - DB_USER=admin
+      - DB_PASS=CSCI5411DB12345
+      - DB_SCHEMA=ecommerce_app_database
+      - ACTIVE_PROFILE=dev
+      - PORT=9000
+      - REDIS_PASSWORD=CSCI5411DB12345
+      - REDIS_HOST=redis-cache
+      - REDIS_PORT=6379
+      - REACT_CLIENT_URL=http://localhost:3000
+    expose:
+      - 9000
+    ports:
+      - 9000:9000
+    networks:
+      - spring-cloud-microservices
+
+  search-suggestion-service:
+    build:
+      context: .
+      dockerfile: ./server/search-suggestion-service/Dockerfile-dev
+    container_name: search-suggestion-service-container
+    restart: always
+    depends_on:
+      - redis-cache
+      - react-ui
+      - common-data-service
+      - authentication-service
+      - payment-service
+    environment:
+      - ACTIVE_PROFILE=dev
+      - PORT=10000
+      - COMMON_DATA_SERVICE_URL=http://common-data-service:9000
+    expose:
+      - 10000
+    ports:
+      - 10000:10000
+    networks:
+      - spring-cloud-microservices
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: ./server/payment-service/Dockerfile-dev
+    container_name: payment-service-container
+    restart: always
+    depends_on:
+      - redis-cache
+      - react-ui
+    environment:
+      - DB_HOST=csci5411-db.chjxtxnfiie0.us-east-1.rds.amazonaws.com
+      - DB_PORT=3306
+      - DB_USER=admin
+      - DB_PASS=CSCI5411DB12345
+      - DB_SCHEMA=ecommerce_app_database
+      - ACTIVE_PROFILE=dev
+      - PORT=9050
+    expose:
+      - 9050
+    ports:
+      - 9050:9050
+    networks:
+      - spring-cloud-microservices
+
+  react-ui:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    container_name: react-service-container
+    stdin_open: true
+    restart: always
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    environment:
+      - REACT_APP_STRIPE_PUBLISH_KEY=pk_test_51H805Oa3n3j3JVXUotWOsdf223PXI2ZehJ0s4QSQK0WjEJer78w87wer8h2u3bo32sTVcxyh5bDuulBildNrp
+      - REACT_APP_COMMON_DATA_SERVICE_PORT=9000
+      - REACT_APP_ENVIRONMENT=dev
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - redis-cache
+    networks:
+      - spring-cloud-microservices
