@@ -53,7 +53,7 @@ services:
       - REDIS_PASSWORD=CSCI5411DB12345
       - REDIS_HOST=redis-cache
       - REDIS_PORT=6379
-      - REACT_CLIENT_URL=http://107.23.36.228:3000
+      - REACT_CLIENT_URL=http://localhost:3000
     expose:
       - 9000
     ports:
@@ -116,9 +116,8 @@ services:
     environment:
       - REACT_APP_STRIPE_PUBLISH_KEY=pk_test_51H805Oa3n3j3JVXUotWOsdf223PXI2ZehJ0s4QSQK0WjEJer78w87wer8h2u3bo32sTVcxyh5bDuulBildNrp
       - REACT_APP_COMMON_DATA_SERVICE_PORT=9000
-      - REACT_APP_COMMON_DATA_SERVICE_URL=http://common-data-service:9000
-      - REACT_APP_AUTHENTICATION_SERVICE_URL=http://authentication-service:7000
-      - REACT_APP_SEARCH_SUGGESTION_SERVICE_URL=http://search-suggestion-service:10000
+      - REACT_APP_AUTHENTICATION_SERVICE_PORT=7000
+      - REACT_APP_SEARCH_SUGGESTION_SERVICE_PORT=10000
       - REACT_APP_ENVIRONMENT=dev
     volumes:
       - ./client:/usr/src/app
