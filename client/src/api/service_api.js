@@ -9,6 +9,7 @@ const {
 export const getBaseURL = () => {
     const { hostname, protocol } = window.location;
     const url = `${protocol}//${hostname}`;
+    console.log("giving url : " + url);
     return url;
 }  
 
