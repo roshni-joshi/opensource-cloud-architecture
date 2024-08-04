@@ -26,11 +26,11 @@ const App = () => {
 
     return (
         <Router history={history}>
+            <Route path="/health" exact component={HealthCheck}/>
             <NavBar errorHandler={setServerErrorHandler}/>
             <TabPanelList/>
             {serverError ? null: <Switch>
                 <Route path="/" exact component={Home}/>
-                <Route path="/health" exact component={HealthCheck}/>
                 <Route path="/signin" exact component={SignIn}/>
                 <Route path="/signup" exact component={SignUp}/>
                 <Route path="/shopping-bag" exact component={ShoppingBag}/>
