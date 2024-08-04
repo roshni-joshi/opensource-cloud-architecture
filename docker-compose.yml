@@ -14,7 +14,7 @@ services:
       - spring-cloud-microservices
 
   authentication-service:
-    image: roshnijoshi/csci5411-authentication-service:latest
+    image: roshnijoshi/authentication-service-csci5411:latest
     container_name: authentication-service-container
     restart: always
     depends_on:
@@ -36,7 +36,7 @@ services:
       - spring-cloud-microservices
 
   common-data-service:
-    image: roshnijoshi/csci5411-common-data-service:latest
+    image: roshnijoshi/common-data-service-csci5411:latest
     container_name: common-data-service-container
     restart: always
     depends_on:
@@ -62,7 +62,7 @@ services:
       - spring-cloud-microservices
 
   search-suggestion-service:
-    image: roshnijoshi/csci5411-search-suggestion-service:latest
+    image: roshnijoshi/search-suggestion-service-csci5411:latest
     container_name: search-suggestion-service-container
     restart: always
     depends_on:
@@ -83,7 +83,7 @@ services:
       - spring-cloud-microservices
 
   payment-service:
-    image: roshnijoshi/csci5411-payment-service:latest
+    image: roshnijoshi/payment-service-csci5411:latest
     container_name: payment-service-container
     restart: always
     depends_on:
@@ -105,7 +105,7 @@ services:
       - spring-cloud-microservices
 
   react-ui:
-    image: roshnijoshi/csci5411-frontend-service:latest
+    image: roshnijoshi/react-service-csci5411:latest
     container_name: react-service-container
     stdin_open: true
     restart: always
