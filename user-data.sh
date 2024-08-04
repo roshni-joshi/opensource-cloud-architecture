@@ -20,4 +20,4 @@ INSTANCE_IP=`curl http://169.254.169.254/latest/meta-data/local-ipv4 -H "X-aws-e
 # Clone the repository and start the application
 git clone https://github.com/roshni-joshi/opensource-cloud-architecture.git
 cd opensource-cloud-architecture
-sudo docker-compose up -d
+sudo INSTANCE_IP=$INSTANCE_IP docker-compose up -d
