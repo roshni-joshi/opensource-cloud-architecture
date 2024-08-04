@@ -119,6 +119,7 @@ services:
       - REACT_APP_AUTHENTICATION_SERVICE_PORT=7000
       - REACT_APP_SEARCH_SUGGESTION_SERVICE_PORT=10000
       - REACT_APP_ENVIRONMENT=dev
+      - INSTANCE_IP=${INSTANCE_IP}
     volumes:
       - ./client:/usr/src/app
       - /usr/src/app/node_modules

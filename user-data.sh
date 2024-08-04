@@ -14,6 +14,9 @@ docker-compose version
 # Install Git
 sudo yum install -y git
 
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+INSTANCE_IP=`curl http://169.254.169.254/latest/meta-data/local-ipv4 -H "X-aws-ec2-metadata-token: $TOKEN"`
+
 # Clone the repository and start the application
 git clone https://github.com/roshni-joshi/opensource-cloud-architecture.git
 cd opensource-cloud-architecture
