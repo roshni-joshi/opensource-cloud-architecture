@@ -14,6 +14,7 @@ import ShoppingBag from "./routes/shoppingBag";
 import {SuccessPayment} from "./routes/successPayment";
 import {CancelPayment} from "./routes/cancelPayment";
 import {BadRequest} from "./ui/error/badRequest";
+import HealthCheck from "./HealthCheck";
 
 const App = () => {
     log.info(`[App]: Rendering App Component`)
@@ -29,6 +30,7 @@ const App = () => {
             <TabPanelList/>
             {serverError ? null: <Switch>
                 <Route path="/" exact component={Home}/>
+                <Route path="/health" exact component={HealthCheck}/>
                 <Route path="/signin" exact component={SignIn}/>
                 <Route path="/signup" exact component={SignUp}/>
                 <Route path="/shopping-bag" exact component={ShoppingBag}/>
