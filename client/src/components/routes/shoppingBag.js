@@ -222,7 +222,13 @@ function ShoppingBag(props) {
     }
 
     const continueBtnClickHandler = () => {
-        history.push("/checkout")
+        let savedAuthDetails = Cookies.get(AUTH_DETAILS_COOKIE)
+        if(savedAuthDetails) {
+            history.push("/checkout")
+        } else {
+            history.push("/signin")
+        }
+        
     }
 
     log.info("[ShoppingBag] Rendering ShoppingBag Component.")
