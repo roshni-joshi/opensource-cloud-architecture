@@ -15,6 +15,7 @@ import {SuccessPayment} from "./routes/successPayment";
 import {CancelPayment} from "./routes/cancelPayment";
 import {BadRequest} from "./ui/error/badRequest";
 import HealthCheck from "./HealthCheck";
+import ConfirmSignup from "./routes/confirmsignup/ConfirmSignup";
 
 const App = () => {
     log.info(`[App]: Rendering App Component`)
@@ -33,6 +34,7 @@ const App = () => {
                 <Route path="/" exact component={Home}/>
                 <Route path="/signin" exact component={SignIn}/>
                 <Route path="/signup" exact component={SignUp}/>
+                <Route path="/confirmsignup" exact component={ConfirmSignup}/>
                 <Route path="/shopping-bag" exact component={ShoppingBag}/>
                 <Route path="/checkout" exact component={Checkout}/>
                 <Route path="/products/details/shopping-bag" exact component={ShoppingBag}/>

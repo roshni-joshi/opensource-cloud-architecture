@@ -58,7 +58,7 @@ class SignInForm extends Component {
                 <form onSubmit={this.handleSubmit}
                       style={{width: "inherit"}}>
 
-                    {renderFormTextField("Username", "username", <AccountCircle/>, "text")}
+                    {renderFormTextField("Email", "username", <AccountCircle/>, "text")}
                     {renderFormTextField("Password", "password", <LockIcon/>, "password")}
 
                     {renderErrorMsg(this.props.signInReducer.errorMsg)}

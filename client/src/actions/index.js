@@ -51,12 +51,12 @@ export const setPaymentInfo = payload => {
 export const signIn = formValues => async dispatch => {
     log.info(`[ACTION]: signIn API is invoked formValues = ${formValues}`)
 
-    const hash = Base64.encode(`${formValues.username}:default`);
-    authServiceAPI.defaults.headers.common['Authorization'] = `Basic ${hash}`
-    const response = await authServiceAPI.post('/authenticate').catch(err => {
-        log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR err.message = ${err.message}`)
-        //dispatch({type: HANDLE_SIGN_IN_ERROR, payload: err.message});
-    });
+    // const hash = Base64.encode(`${formValues.username}:default`);
+    // authServiceAPI.defaults.headers.common['Authorization'] = `Basic ${hash}`
+    // const response = await authServiceAPI.post('/authenticate').catch(err => {
+    //     log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR err.message = ${err.message}`)
+    //     //dispatch({type: HANDLE_SIGN_IN_ERROR, payload: err.message});
+    // });
 
     const user = new CognitoUser({
         Username: formValues.username,
@@ -209,18 +209,25 @@ export const signUp = formValues => async dispatch => {
     const attributeList = [];
     attributeList.push(
       new CognitoUserAttribute({
-        Name: 'name',
-        Value: formValues.username,
+        Name: 'email',
+        Value: formValues.email.toLowerCase(),
       })
     );
-    UserPool.signUp(formValues.username, formValues.password, attributeList, null, (error, data) => {
+    UserPool.signUp(formValues.email.toLowerCase(), formValues.password, attributeList, null, (error, data) => {
       if (error) {
         console.log('response.data.error_msg = ' + error.message);
         log.info(`[ACTION]: dispatch HANDLE_SIGN_UP_ERROR response.data.error_msg = ${error.message}.`)
         dispatch({type: HANDLE_SIGN_UP_ERROR, payload: error.message});
       } else {
         log.info(`[ACTION]: dispatch HANDLE_SIGN_UP account_creation_status = ${data.userConfirmed}.`)
-        history.push("/signin");
+        const cognitoUser = new CognitoUser({
+            Username: formValues.email.toLowerCase(),
+            Pool: UserPool,
+          });
+        history.push({
+            pathname: '/confirmsignup',
+            state: { cognitoUser: cognitoUser }
+          });
       }
     })
 
