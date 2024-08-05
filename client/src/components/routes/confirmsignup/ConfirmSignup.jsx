@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { CognitoUser } from 'amazon-cognito-identity-js';
 import { Container, Grid, Typography, TextField, Button } from '@material-ui/core';
 import history from "../../../history";
 
 function ConfirmSignup() {
   const [confirmationCode, setConfirmationCode] = useState('');
   const [showAlert, setShowAlert] = useState(false);
-  const location = useLocation();
-  const { cognitoUser } = location.state || {};
 
   const handleSubmit = (event) => {
+    const cognitoUser = new CognitoUser({
+      Username: sessionStorage.getItem("email"),
+      Pool: UserPool,
+    });
     event.preventDefault();
     cognitoUser.confirmRegistration(confirmationCode, true, (error, data) => {
       if (error) {

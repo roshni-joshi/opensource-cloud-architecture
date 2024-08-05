@@ -220,14 +220,8 @@ export const signUp = formValues => async dispatch => {
         dispatch({type: HANDLE_SIGN_UP_ERROR, payload: error.message});
       } else {
         log.info(`[ACTION]: dispatch HANDLE_SIGN_UP account_creation_status = ${data.userConfirmed}.`)
-        const cognitoUser = new CognitoUser({
-            Username: formValues.email.toLowerCase(),
-            Pool: UserPool,
-          });
-        history.push({
-            pathname: '/confirmsignup',
-            state: { cognitoUser: cognitoUser }
-          });
+        sessionStorage.setItem("email", formValues.email.toLowerCase());
+        history.push("/confirmsignup");
       }
     })
 
