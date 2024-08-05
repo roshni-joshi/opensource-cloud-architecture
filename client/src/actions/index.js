@@ -51,12 +51,12 @@ export const setPaymentInfo = payload => {
 export const signIn = formValues => async dispatch => {
     log.info(`[ACTION]: signIn API is invoked formValues = ${formValues}`)
 
-    // const hash = Base64.encode(`${formValues.username}:default`);
-    // authServiceAPI.defaults.headers.common['Authorization'] = `Basic ${hash}`
-    // const response = await authServiceAPI.post('/authenticate').catch(err => {
-    //     log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR err.message = ${err.message}`)
-    //     //dispatch({type: HANDLE_SIGN_IN_ERROR, payload: err.message});
-    // });
+    const hash = Base64.encode(`${formValues.username}:default`);
+    authServiceAPI.defaults.headers.common['Authorization'] = `Basic ${hash}`
+    const response = await authServiceAPI.post('/authenticate').catch(err => {
+        //log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR err.message = ${err.message}`)
+        //dispatch({type: HANDLE_SIGN_IN_ERROR, payload: err.message});
+    });
 
     const user = new CognitoUser({
         Username: formValues.username,
@@ -71,8 +71,10 @@ export const signIn = formValues => async dispatch => {
       user.authenticateUser(authDetails, {
         onSuccess: (result) => {
             //log.info(`[ACTION]: dispatch HANDLE_SIGN_IN response.data.jwt = ${response.data.jwt}`)
-            dispatch({type: HANDLE_SIGN_IN, payload: 'success'});
-            Cookies.set(AUTH_DETAILS_COOKIE, "success", {expires: 2});
+            if(response) {
+                dispatch({type: HANDLE_SIGN_IN, payload: response.data});
+                Cookies.set(AUTH_DETAILS_COOKIE, response.data, {expires: 2});
+            }
             history.push('/');
         },
         onFailure: (error) => {
