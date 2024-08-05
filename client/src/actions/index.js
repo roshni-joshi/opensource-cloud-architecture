@@ -70,13 +70,13 @@ export const signIn = formValues => async dispatch => {
   
       user.authenticateUser(authDetails, {
         onSuccess: (result) => {
-            log.info(`[ACTION]: dispatch HANDLE_SIGN_IN response.data.jwt = ${response.data.jwt}`)
+            //log.info(`[ACTION]: dispatch HANDLE_SIGN_IN response.data.jwt = ${response.data.jwt}`)
             dispatch({type: HANDLE_SIGN_IN, payload: 'success'});
             Cookies.set(AUTH_DETAILS_COOKIE, "success", {expires: 2});
             history.push('/');
         },
         onFailure: (error) => {
-            log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR response.data.error = ${error.message}`)
+            //log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR response.data.error = ${error.message}`)
             dispatch({type: HANDLE_SIGN_IN_ERROR, payload: error.message});
         }
       })
