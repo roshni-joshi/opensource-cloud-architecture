@@ -1,49 +1,54 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Alert, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Container, Grid, Typography, TextField, Button, Alert } from '@material-ui/core';
+import history from "../history";
 
 function ConfirmSignup() {
-  const [confirmationCode, setConfirmationCode] = useState();
-  const [showAlert, setShowAlert] = useState(false)
+  const [confirmationCode, setConfirmationCode] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
   const location = useLocation();
   const { cognitoUser } = location.state || {};
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     cognitoUser.confirmRegistration(confirmationCode, true, (error, data) => {
       if (error) {
-        setShowAlert(true)
+        setShowAlert(true);
       } else {
-        setShowAlert(false)
-        history.push("/signin");
+        setShowAlert(false);
+        history.push('/signin');
       }
-    })
-  }
+    });
+  };
 
   return (
-    <Container maxWidth="xs" sx={{ paddingBottom: '10%' }}>
-      <Grid container rowGap={3} columnSpacing={2}>
-        <Grid item md={12}>
-          <Typography>Enter the confirmation code sent to your email.</Typography>
+    <Container maxWidth="xs" style={{ paddingBottom: '10%' }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="h6">Enter the confirmation code sent to your email.</Typography>
         </Grid>
-        {showAlert &&
-          <Grid item md={12}>
+        {showAlert && (
+          <Grid item xs={12}>
             <Alert severity="error">Confirmation code is invalid. Try Again!</Alert>
           </Grid>
-        }
-        <Grid item md={12}>
+        )}
+        <Grid item xs={12}>
           <TextField
             fullWidth
-            id="Enter Confirmation Code"
-            label="confirmationCode"
+            id="confirmationCode"
+            label="Confirmation Code"
             variant="outlined"
-            onChange={(event) => setConfirmationCode(event.target.value)} />
+            onChange={(event) => setConfirmationCode(event.target.value)}
+          />
         </Grid>
-        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button type="submit" variant="contained" onClick={handleSubmit}>Next</Button>
+        <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+          <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+            Confirm
+          </Button>
         </Grid>
       </Grid>
     </Container>
-  )
+  );
 }
 
-export default ConfirmSignup
+export default ConfirmSignup;
