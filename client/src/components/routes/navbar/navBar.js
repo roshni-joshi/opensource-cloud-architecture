@@ -152,7 +152,7 @@ const NavBar = props => {
         }
     }
 
-    if (isSignedIn || googleAuthReducer.isSignedInUsingOAuth) {
+    if (Cookies.get(AUTH_DETAILS_COOKIE)) {
         let fName
         if (firstName) {
             fName = firstName
@@ -179,9 +179,15 @@ const NavBar = props => {
 
     const changeAuthStatusHandler = () => {
         log.info(`[Navbar] handleSignOutClick isSignedIn = ${googleAuthReducer.isSignedInUsingOAuth}`)
-        if (googleAuthReducer.isSignedInUsingOAuth) {
-            props.signOutUsingOAuth(googleAuthReducer.oAuth)
-        } else if (tokenId && isSignedIn) {
+        // if (googleAuthReducer.isSignedInUsingOAuth) {
+        //     props.signOutUsingOAuth(googleAuthReducer.oAuth)
+        // } else if (tokenId && isSignedIn) {
+        //     props.signOut()
+        // } else {
+        //     history.push("/signin")
+        // }
+        let savedAuthDetails = Cookies.get(AUTH_DETAILS_COOKIE)
+        if(savedAuthDetails) {
             props.signOut()
         } else {
             history.push("/signin")
