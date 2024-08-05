@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 import { Container, Grid, Typography, TextField, Button } from '@material-ui/core';
 import history from "../../../history";
-import UserPool from '../helper/UserPool';
+import UserPool from '../../../helper/UserPool';
 
 function ConfirmSignup() {
   const [confirmationCode, setConfirmationCode] = useState('');
