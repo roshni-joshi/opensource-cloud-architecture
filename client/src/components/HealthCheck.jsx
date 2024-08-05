@@ -3,7 +3,7 @@ import React from 'react'
 function HealthCheck() {
   return (
     <div>
-      OK
+      OK status. Request is handled by instance with ip {process.env.REACT_APP_INSTANCE_IP}
     </div>
   )
 }
