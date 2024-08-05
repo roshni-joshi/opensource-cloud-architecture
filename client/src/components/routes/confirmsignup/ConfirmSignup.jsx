@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Grid, Typography, TextField, Button, Alert } from '@material-ui/core';
-import history from "../history";
+import { Container, Grid, Typography, TextField, Button } from '@material-ui/core';
+import history from "../../../history";
 
 function ConfirmSignup() {
   const [confirmationCode, setConfirmationCode] = useState('');
@@ -29,7 +29,7 @@ function ConfirmSignup() {
         </Grid>
         {showAlert && (
           <Grid item xs={12}>
-            <Alert severity="error">Confirmation code is invalid. Try Again!</Alert>
+            <div>Confirmation code is invalid. Try Again!</div>
           </Grid>
         )}
         <Grid item xs={12}>
