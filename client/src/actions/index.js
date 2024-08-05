@@ -18,6 +18,8 @@ import history from "../history";
 import {Base64} from 'js-base64';
 import Cookies from 'js-cookie';
 import log from "loglevel";
+import { AuthenticationDetails, CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
+import UserPool from '../helper/UserPool';
 import {commonServiceAPI, authServiceAPI, searchSuggestionServiceAPI} from "../api/service_api";
 import axios from 'axios';
 import {DEFAULT_SEARCH_SUGGESTION_API, SEARCH_SUGGESTION_API} from "../constants/api_routes";
@@ -49,14 +51,38 @@ export const setPaymentInfo = payload => {
 export const signIn = formValues => async dispatch => {
     log.info(`[ACTION]: signIn API is invoked formValues = ${formValues}`)
 
-    const hash = Base64.encode(`${formValues.username}:${formValues.password}`);
+    const hash = Base64.encode(`${formValues.username}:default`);
     authServiceAPI.defaults.headers.common['Authorization'] = `Basic ${hash}`
     const response = await authServiceAPI.post('/authenticate').catch(err => {
         log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR err.message = ${err.message}`)
-        dispatch({type: HANDLE_SIGN_IN_ERROR, payload: err.message});
+        //dispatch({type: HANDLE_SIGN_IN_ERROR, payload: err.message});
     });
 
-    if (response) {
+    const user = new CognitoUser({
+        Username: formValues.username,
+        Pool: UserPool,
+      });
+  
+      const authDetails = new AuthenticationDetails({
+        Username: formValues.username,
+        Password: formValues.password,
+      });
+  
+      user.authenticateUser(authDetails, {
+        onSuccess: (result) => {
+            log.info(`[ACTION]: dispatch HANDLE_SIGN_IN response.data.jwt = ${response.data.jwt}`)
+            dispatch({type: HANDLE_SIGN_IN, payload: 'success'});
+            Cookies.set(AUTH_DETAILS_COOKIE, "success", {expires: 2});
+            history.push('/');
+        },
+        onFailure: (error) => {
+            log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR response.data.error = ${error.message}`)
+            dispatch({type: HANDLE_SIGN_IN_ERROR, payload: error.message});
+        }
+      })
+  
+
+    /*if (response) {
         if (response.data.jwt) {
             log.info(`[ACTION]: dispatch HANDLE_SIGN_IN response.data.jwt = ${response.data.jwt}`)
             dispatch({type: HANDLE_SIGN_IN, payload: response.data});
@@ -66,7 +92,7 @@ export const signIn = formValues => async dispatch => {
             log.info(`[ACTION]: dispatch HANDLE_SIGN_IN_ERROR response.data.error = ${response.data.error}`)
             dispatch({type: HANDLE_SIGN_IN_ERROR, payload: response.data.error});
         }
-    }
+    }*/
 }
 
 export const signOut = () => {
@@ -171,16 +197,34 @@ export const signUp = formValues => async dispatch => {
 
     const response = await authServiceAPI.post('/signup', {
         'username': formValues.username,
-        'password': formValues.password,
+        'password': 'default',
         'firstname': formValues.firstName,
         'lastname': formValues.lastName,
         'email': formValues.email.toLowerCase(),
     }).catch(err => {
         log.info(`[ACTION]: signUp dispatch HANDLE_SIGN_UP_ERROR err.message = ${err.message}.`)
-        dispatch({type: HANDLE_SIGN_UP_ERROR, payload: err.message});
+        //dispatch({type: HANDLE_SIGN_UP_ERROR, payload: err.message});
     });
 
-    if (response) {
+    const attributeList = [];
+    attributeList.push(
+      new CognitoUserAttribute({
+        Name: 'name',
+        Value: formValues.username,
+      })
+    );
+    UserPool.signUp(formValues.username, formValues.password, attributeList, null, (error, data) => {
+      if (error) {
+        console.log('response.data.error_msg = ' + error.message);
+        log.info(`[ACTION]: dispatch HANDLE_SIGN_UP_ERROR response.data.error_msg = ${error.message}.`)
+        dispatch({type: HANDLE_SIGN_UP_ERROR, payload: error.message});
+      } else {
+        log.info(`[ACTION]: dispatch HANDLE_SIGN_UP account_creation_status = ${data.userConfirmed}.`)
+        history.push("/signin");
+      }
+    })
+
+    /*if (response) {
         if (response.data.account_creation_status === 'success') {
             log.info(`[ACTION]: dispatch HANDLE_SIGN_UP account_creation_status = ${response.data.account_creation_status}.`)
             history.push("/signin");
@@ -189,7 +233,7 @@ export const signUp = formValues => async dispatch => {
             log.info(`[ACTION]: dispatch HANDLE_SIGN_UP_ERROR response.data.error_msg = ${response.data.error_msg}.`)
             dispatch({type: HANDLE_SIGN_UP_ERROR, payload: response.data.error_msg});
         }
-    }
+    }*/
 }
 
 export const sendPaymentToken = (token) => async dispatch => {
