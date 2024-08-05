@@ -189,9 +189,10 @@ const NavBar = props => {
         let savedAuthDetails = Cookies.get(AUTH_DETAILS_COOKIE)
         if(savedAuthDetails) {
             props.signOut()
-        } else {
-            history.push("/signin")
-        }
+        } 
+            
+        history.push("/signin")
+        
         handleMobileMenuClose();
     }
 
